@@ -21,7 +21,7 @@ const SpeechToTextApp = () => {
             if (!userId) return;
             setLoading(true);
             try {
-                const response = await axios.post(`http://localhost:5000/getall/${userId}`, {}, {
+                const response = await axios.post(`https://voice-to-speech-six.vercel.app/getall/${userId}`, {}, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const SpeechToTextApp = () => {
 
             try {
                 toast.info("Processing your recording...");
-                const response = await axios.post('http://localhost:5000/upload', formData, {
+                const response = await axios.post('https://voice-to-speech-six.vercel.app/upload', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -99,7 +99,7 @@ const SpeechToTextApp = () => {
         }
 
         try {
-            await axios.delete(`http://localhost:5000/delete/${id}`, {
+            await axios.delete(`https://voice-to-speech-six.vercel.app/delete/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setTranscriptions(transcriptions.filter(item => item._id !== id));
