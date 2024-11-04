@@ -33,6 +33,10 @@ const authenticateToken = (req, res, next) => {
         next();
     });
 };
+// Test API root endpoint
+app.get('/', (req, res) => {
+    res.status(200).json({ message: 'API is running and ready for testing!' });
+});
 
 // User registration endpoint
 app.post('/register', async (req, res) => {
