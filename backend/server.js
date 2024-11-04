@@ -6,6 +6,7 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
+const path = require('path');
 const connectDB = require('./db/connection');
 const Transcription = require('./models/textSchema');
 const User = require('./models/userSchema');
@@ -33,6 +34,7 @@ const authenticateToken = (req, res, next) => {
         next();
     });
 };
+
 // Test API root endpoint
 app.get('/', (req, res) => {
     res.status(200).json({ message: 'API is running and ready for testing!' });
@@ -79,10 +81,12 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// Configure multer for file storage
-const upload = multer({ dest: 'uploads/' });
+// Configure multer for file storage in /tmp
+const upload = multer({ 
+    dest: path.join('/tmp'), // Use the /tmp directory
+    limits: { fileSize: 10 * 1024 * 1024 } // Set limits (e.g., 10 MB)
+});
 
-// Function to poll AssemblyAI transcription status
 // Function to poll AssemblyAI transcription status
 async function pollTranscriptionStatus(transcriptionId) {
     const pollingInterval = 5000;
@@ -122,7 +126,7 @@ app.post('/upload', upload.single('audio'), async (req, res) => {
             return res.status(400).json({ message: "No file uploaded." });
         }
 
-        const audioFilePath = req.file.path;
+        const audioFilePath = req.file.path; // Now pointing to /tmp
         const allowedMimeTypes = ['audio/mpeg', 'audio/wav'];
         if (!allowedMimeTypes.includes(req.file.mimetype)) {
             fs.unlinkSync(audioFilePath);
@@ -172,7 +176,7 @@ app.post('/upload', upload.single('audio'), async (req, res) => {
         console.error("Error processing audio:", error.message || error.response.data);
         res.status(500).json({ message: "Error processing audio" });
     } finally {
-        if (req.file) fs.unlinkSync(req.file.path);
+        if (req.file) fs.unlinkSync(req.file.path); // Clean up the uploaded file
     }
 });
 
@@ -192,7 +196,6 @@ app.post('/getall/:id', async (req, res) => {
         res.status(500).json({ message: "Internal server error." });
     }
 });
-
 
 // DELETE endpoint to delete a transcription by ID
 app.delete('/delete/:id', async (req, res) => {
