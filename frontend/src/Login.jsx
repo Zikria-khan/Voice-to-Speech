@@ -11,7 +11,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/login', { email, password });
+            const response = await axios.post('https://voice-to-speech-six.vercel.app/login', { email, password });
             const token = response.data.token; // Retrieve the token from the response
             const user = response.data.user; // Retrieve user data from the response
 

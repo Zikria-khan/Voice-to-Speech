@@ -43,7 +43,7 @@ const Register = () => {
             localStorage.clear();
     
             // Send registration request
-            const response = await axios.post('http://localhost:5000/register', { name, email, password, image });
+            const response = await axios.post('https://voice-to-speech-six.vercel.app/register', { name, email, password, image });
      console.log(response)
             // Store the user object in local storage
             localStorage.setItem('user', JSON.stringify({
