@@ -84,7 +84,7 @@ app.post('/login', async (req, res) => {
 // Configure multer for file storage in /tmp
 const upload = multer({ 
     dest: path.join('/tmp'), // Use the /tmp directory
-    limits: { fileSize: 10 * 1024 * 1024 } // Set limits (e.g., 10 MB)
+    limits: { fileSize: 100 * 1024 * 1024 } // Set limits (e.g., 10 MB)
 });
 
 // Function to poll AssemblyAI transcription status
