@@ -51,29 +51,33 @@ const SpeechToTextApp = () => {
     
         mediaRecorderRef.current.onstop = async () => {
             const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
-            if (audioBlob.size === 0) {
-                toast.error('The audio blob is empty. Please check the recording process.');
+            if (!audioBlob.size) {
+                toast.error('Audio blob is empty. Please check recording process.');
                 return;
             }
-    
+        
             const formData = new FormData();
             formData.append('audio', audioBlob, 'recording.wav');
             formData.append('userId', userId);
-    
+        
             try {
-                toast.info("Processing your recording...");
+                toast.info("Uploading recording...");
                 const response = await axios.post('https://voice-to-speech-six.vercel.app/upload', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 });
-    
                 setTranscriptions(prev => [...prev, response.data]);
                 toast.success('Transcription uploaded successfully!');
             } catch (error) {
-                console.error('Error uploading audio:', error);
-                toast.error('Error uploading audio: ' + (error.response ? error.response.data : error.message));
+                if (error.response) {
+                    console.error("Error response:", error.response.data);
+                    toast.error('Upload failed: ' + (error.response.data.message || 'Bad request'));
+                } else {
+                    console.error('Error message:', error.message);
+                    toast.error('Network error: ' + error.message);
+                }
             }
         };
-    
+        
         mediaRecorderRef.current.start();
         audioChunksRef.current = [];
         setRecording(true);
