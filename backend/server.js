@@ -17,7 +17,7 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
-    origin: 'https://voice-to-speech-7q3p.vercel.app/', // Allow all origins
+    origin: 'https://voice-to-speech-7q3p.vercel.app', // Allow all origins
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify the allowed methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Specify the allowed headers
 };
