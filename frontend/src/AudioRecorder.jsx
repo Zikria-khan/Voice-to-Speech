@@ -13,7 +13,7 @@ const SpeechToTextApp = () => {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user ? user.id : null;
-    const image = user?.image || 'default-profile.png'; // Default image if no user image
+    const image = user?.image || 'default-profile.png';
     const name = user?.name || 'User';
 
     useEffect(() => {
@@ -42,41 +42,38 @@ const SpeechToTextApp = () => {
     const startRecording = async () => {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaRecorderRef.current = new MediaRecorder(stream);
-
+    
         mediaRecorderRef.current.ondataavailable = event => {
             if (event.data.size > 0) {
                 audioChunksRef.current.push(event.data);
             }
         };
-
+    
         mediaRecorderRef.current.onstop = async () => {
             const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
             if (audioBlob.size === 0) {
                 toast.error('The audio blob is empty. Please check the recording process.');
                 return;
             }
-
+    
             const formData = new FormData();
             formData.append('audio', audioBlob, 'recording.wav');
             formData.append('userId', userId);
-
+    
             try {
                 toast.info("Processing your recording...");
-                const response = await axios.post('https://voice-to-speech-six.vercel.app/upload', formData, { timeout: 10000 }, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                })
-                
+                const response = await axios.post('https://voice-to-speech-six.vercel.app/upload', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
+    
                 setTranscriptions(prev => [...prev, response.data]);
-
                 toast.success('Transcription uploaded successfully!');
             } catch (error) {
                 console.error('Error uploading audio:', error);
                 toast.error('Error uploading audio: ' + (error.response ? error.response.data : error.message));
             }
         };
-
+    
         mediaRecorderRef.current.start();
         audioChunksRef.current = [];
         setRecording(true);
@@ -139,7 +136,6 @@ const SpeechToTextApp = () => {
                               <p><strong>Transcription:</strong> {item.transcription}</p>
                               <button className="delete-button" onClick={() => deleteTranscription(item._id)}>✕</button>
                           </li>
-                          
                             ))}
                         </ul>
                     )
