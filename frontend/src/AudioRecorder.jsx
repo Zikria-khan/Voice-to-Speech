@@ -62,7 +62,7 @@ const SpeechToTextApp = () => {
 
             try {
                 toast.info("Processing your recording...");
-                const response = await axios.post('https://voice-to-speech-six.vercel.app/upload', formData, {
+                const response = await axios.post('https://voice-to-speech-six.vercel.app/upload', formData, { timeout: 10000 }, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
